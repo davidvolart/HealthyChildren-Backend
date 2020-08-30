@@ -5,7 +5,7 @@ services:
     build:
       context: .
     ports:
-      - "8012:8012"
+      - "8000:8000"
     volumes:
       - ./app:/app
     command: >

@@ -5,7 +5,7 @@ from core import models
 
 
 class UserAdmin(BaseUserAdmin):
-    ordering = [id]
+    ordering = ['id']
     list_display = ['email', 'name']
 
 
