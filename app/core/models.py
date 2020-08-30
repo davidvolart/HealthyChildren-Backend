@@ -8,10 +8,20 @@ class UserManager(BaseUserManager):
 
     def create_user(self, email, password, **extra_fields):
         """Creates and saves a new user"""
-        user = self.model(email=email, **extra_fields)
+        if not email:
+            raise ValueError('email is required')
+        user = self.model(email=self.normalize_email(email), **extra_fields)
         user.set_password(password)
         user.save()
         return user
+
+    def create_super_user(self, email, password):
+        """Creates and saves a new super_user"""
+        super_user = self.create_user(email=email, password=password)
+        super_user.is_superuser = True
+        super_user.is_staff = True
+        super_user.save()
+        return super_user
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -21,8 +31,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     height = models.DecimalField(max_digits=3, decimal_places=2, default=Decimal(0.00))
     weight = models.DecimalField(max_digits=4, decimal_places=2, default=Decimal(0.00))
     age = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)], default=1)
-    is_active = models.BooleanField(default= True)
-    is_staff = models.BooleanField(default= False)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
 
     objects = UserManager()
 
